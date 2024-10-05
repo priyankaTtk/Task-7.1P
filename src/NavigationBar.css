@@ -1,0 +1,46 @@
+/* Container for the whole layout */
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/source/78793f158998433.639faebcb426b.jpg');
+  }
+  
+  /* Navigation bar styling */
+  .navigation-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    top: 0;
+    width: 97%;
+    z-index: 1000; /* Ensure it stays above the content */
+  }
+  
+  /* Links inside the navigation bar */
+  .link {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+  }
+  
+  .link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Search bar styling */
+  .search-bar {
+    padding: 8px;
+    border-radius: 4px;
+    border: none;
+  }
+  
+  /* Ensures that the content is pushed below the fixed navigation bar */
+  .content {
+    padding-top: 80px; /* This padding should match or be slightly larger than the height of the navigation bar */
+    flex: 1;
+  }
+  
