@@ -2,33 +2,44 @@ import React, { useState } from 'react';
 import Input from './Input';
 import Button from './Button';
 import { Link } from 'react-router-dom';
-import './App.css'; // Ensure this file is imported for centering
+import './App.css';
 import './Login.css';
 import { signInWithGooglePopup, createUserDocFromAuth, signinAuthUserWithEmailAndPassword } from './utils/firebase';
 
 const Login = (props) => {
-  const logGoogleUser = async () => {
-    const { user } = await signInWithGooglePopup();
-    createUserDocFromAuth(user);
-  };
-
-  const [contact, setContact] = useState({
-    email: '',
-    password: ''
-  });
+  const [contact, setContact] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const { email, password } = contact;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setContact((preValue) => ({
-      ...preValue,
-      [name]: value
-    }));
+    setContact((preValue) => ({ ...preValue, [name]: value }));
+  };
+
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      await signinAuthUserWithEmailAndPassword(email, password);
+      // Handle successful login (e.g., redirect)
+    } catch (error) {
+      console.error("Error logging in with email and password", error);
+      setError('Failed to log in. Please check your email and password.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logGoogleUser = async () => {
+    const { user } = await signInWithGooglePopup();
+    createUserDocFromAuth(user);
   };
 
   return (
-    <div className="main-content"> {/* Centers the login box */}
+    <div className="main-content">
       <div className="header-divv" style={{ width: '400px' }}>
         <label>Email</label>
         <Input
@@ -36,7 +47,7 @@ const Login = (props) => {
           type='text'
           placeholder='email'
           onChange={handleChange}
-          value={contact.email}
+          value={email}
         />
 
         <br />
@@ -46,14 +57,16 @@ const Login = (props) => {
           type='password'
           placeholder='password'
           onChange={handleChange}
-          value={contact.password}
+          value={password}
         />
 
         <br />
-
-        <button>
-          Log in
-        </button>
+        {error && <div className="error-message">{error}</div>}
+        <form onSubmit={handleEmailLogin}>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Logging in...' : 'Log in'}
+          </button>
+        </form>
         <br />
         <button onClick={logGoogleUser}>
           Login with Google
@@ -61,9 +74,9 @@ const Login = (props) => {
         <br />
         <br />
         <div className='signup-link'>
-        <Link to='/signup'>
-          Sign up instead
-        </Link>
+          <Link to='/signup'>
+            Sign up instead
+          </Link>
         </div>
       </div>
     </div>
